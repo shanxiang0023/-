@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客服福利 - APP管理</title>
+    <style>
+        :root {
+            --primary-color: #1677ff;
+            --primary-hover: #4096ff;
+            --bg-color: #f0f2f5;
+            --sidebar-bg: #001529;
+            --sidebar-text: #a6adb4;
+            --sidebar-active-bg: #1677ff;
+            --sidebar-active-text: #ffffff;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --border-color: #f0f0f0;
+            --white: #ffffff;
+            --danger: #ff4d4f;
+            --warning: #faad14;
+            --success: #52c41a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 256px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--white);
+            background-color: rgba(0,0,0,0.2);
+            gap: 10px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 16px 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover {
+            color: var(--white);
+        }
+
+        .menu-item.active-group {
+            color: var(--white);
+        }
+
+        .sub-menu {
+            list-style: none;
+            background-color: #000c17;
+        }
+
+        .sub-menu-item {
+            padding: 12px 24px 12px 48px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .sub-menu-item:hover {
+            color: var(--white);
+        }
+
+        .sub-menu-item.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-header {
+            height: 64px;
+            background-color: var(--white);
+            box-shadow: 0 1px 4px rgba(0,21,41,0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 10;
+        }
+
+        .breadcrumb {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+        .breadcrumb .current {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .page-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        /* 搜索区 */
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .form-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .input-box {
+            height: 32px;
+            padding: 4px 11px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            width: 180px;
+        }
+        
+        .input-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(22,119,255,0.2);
+        }
+
+        .btn {
+            height: 32px;
+            padding: 4px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-default {
+            background-color: var(--white);
+            border-color: #d9d9d9;
+            color: var(--text-main);
+        }
+
+        .btn-default:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .action-bar {
+            margin-bottom: 16px;
+        }
+
+        /* 表格区 */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #fafafa;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        tr:hover td {
+            background-color: #fafafa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-not-downloaded {
+            background-color: #fffbe6;
+            color: #faad14;
+            border: 1px solid #ffe58f;
+        }
+
+        .status-downloaded {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 16px;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        /* 弹窗蒙层 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 8px;
+            width: 420px;
+            box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+            animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            color: #999;
+            font-size: 16px;
+            background: none;
+            border: none;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            color: var(--text-main);
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .modal-body {
+            padding: 32px 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .warning-icon {
+            color: var(--warning);
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .modal-content-text {
+            font-size: 14px;
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-top: 2px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            NetShort 管理系统
+        </div>
+        <ul class="menu">
+            <li class="menu-item">仪表盘</li>
+            <li class="menu-item">用户管理</li>
+            <li class="menu-item">版本管理</li>
+            <li class="menu-item active-group">
+                APP管理
+                <svg style="margin-left: auto;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </li>
+            <ul class="sub-menu">
+                <li class="sub-menu-item">协议管理</li>
+                <li class="sub-menu-item">应用评价</li>
+                <li class="sub-menu-item active">客服福利</li>
+                <li class="sub-menu-item">首页管理</li>
+                <li class="sub-menu-item">AI管理</li>
+            </ul>
+            <li class="menu-item">内容策略</li>
+        </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="breadcrumb">
+                APP管理 <span style="color:#d9d9d9">/</span> <span class="current">客服福利</span>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <!-- 搜索过滤卡片 -->
+            <div class="card">
+                <div class="search-form">
+                    <div class="form-item">
+                        <label>UID:</label>
+                        <input type="text" class="input-box" placeholder="请输入UID">
+                    </div>
+                    <div class="form-item">
+                        <label>国家梯度:</label>
+                        <select class="input-box">
+                            <option value="">请选择</option>
+                            <option value="t1">T1国家</option>
+                            <option value="t2">T2国家</option>
+                            <option value="t3">T3国家</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label>国家:</label>
+                        <select class="input-box">
+                            <option value="">请选择</option>
+                            <option value="us">美国</option>
+                            <option value="uk">英国</option>
+                            <option value="au">澳大利亚</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label>创建时间:</label>
+                        <input type="date" class="input-box">
+                    </div>
+                    <div class="form-item">
+                        <label>下载情况:</label>
+                        <select class="input-box">
+                            <option value="">请选择</option>
+                            <option value="0">未下载</option>
+                            <option value="1">已下载</option>
+                        </select>
+                    </div>
+                    <div class="form-item" style="margin-left: auto;">
+                        <button class="btn btn-default">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.6 5.6"/></svg>
+                            重置
+                        </button>
+                        <button class="btn btn-primary">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            搜索
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据列表卡片 -->
+            <div class="card">
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="openModal()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        下载
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>创建时间</th>
+                                <th>国家梯度</th>
+                                <th>国家</th>
+                                <th>国家代码</th>
+                                <th>UID</th>
+                                <th>下载情况</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2026.7.1 14:30:00</td>
+                                <td>T1国家</td>
+                                <td>英国</td>
+                                <td>UK</td>
+                                <td>83921003</td>
+                                <td><span class="status-badge status-not-downloaded">未下载</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026.7.1 13:15:22</td>
+                                <td>T1国家</td>
+                                <td>美国</td>
+                                <td>US</td>
+                                <td>83921004</td>
+                                <td><span class="status-badge status-downloaded">已下载</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026.7.1 11:05:10</td>
+                                <td>T2国家</td>
+                                <td>澳大利亚</td>
+                                <td>AU</td>
+                                <td>83921005</td>
+                                <td><span class="status-badge status-not-downloaded">未下载</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026.7.1 09:44:05</td>
+                                <td>T1国家</td>
+                                <td>英国</td>
+                                <td>UK</td>
+                                <td>83921006</td>
+                                <td><span class="status-badge status-downloaded">已下载</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span>共 4 条记录</span>
+                    <select class="input-box" style="width: 100px; height: 28px;">
+                        <option>10条/页</option>
+                        <option>20条/页</option>
+                    </select>
+                    <button class="btn btn-default" style="height: 28px; padding: 0 8px;" disabled>&lt;</button>
+                    <button class="btn btn-primary" style="height: 28px; padding: 0 12px;">1</button>
+                    <button class="btn btn-default" style="height: 28px; padding: 0 8px;" disabled>&gt;</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 下载确认弹窗 -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">系统提示</div>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <div class="modal-content-text">
+                    确认下载 <strong>20260707-T1国家/英国</strong> 表格吗？
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmDownload()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('downloadModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('downloadModal').classList.remove('active');
+        }
+
+        function confirmDownload() {
+            alert('执行下载指令成功！\n文件已生成：20260707-T1国家_英国.xlsx');
+            closeModal();
+            
+            // 演示：将第一行的状态改为“已下载”
+            const firstBadge = document.querySelector('tbody tr:first-child .status-badge');
+            if(firstBadge && firstBadge.classList.contains('status-not-downloaded')) {
+                firstBadge.className = 'status-badge status-downloaded';
+                firstBadge.textContent = '已下载';
+            }
+        }
+    </script>
+</body>
+</html>
