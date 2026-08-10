@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetShort 管理系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="4" fill="white"/>
+                    <path d="M7 12L12 7L17 12" stroke="#001529" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 17L12 12L17 17" stroke="#001529" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>NetShort 管理系统</span>
+            </div>
+            <nav class="menu">
+                <div class="menu-item">仪表盘</div>
+                <div class="menu-item">用户管理</div>
+                <div class="menu-item active-group">
+                    <div class="menu-title">赠送管理 <span class="arrow">↓</span></div>
+                    <div class="sub-menu">
+                        <div class="sub-menu-item active">客诉挽留</div>
+                        <div class="sub-menu-item">日常福利</div>
+                        <div class="sub-menu-item">活动赠送</div>
+                    </div>
+                </div>
+                <div class="menu-item">APP管理</div>
+                <div class="menu-item">内容策略</div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <span class="text-gray">赠送管理</span> <span class="separator">/</span> <span class="text-dark">客诉挽留</span>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <!-- Filter Section -->
+                <section class="filter-section">
+                    <div class="filter-grid">
+                        <div class="form-group">
+                            <label>UID:</label>
+                            <input type="text" placeholder="请输入UID">
+                        </div>
+                        <div class="form-group">
+                            <label>国家梯度:</label>
+                            <select><option>请选择</option><option>T1国家</option><option>T2国家</option></select>
+                        </div>
+                        <div class="form-group">
+                            <label>国家:</label>
+                            <select><option>请选择</option><option>英国</option><option>美国</option><option>澳大利亚</option></select>
+                        </div>
+                        <div class="form-group">
+                            <label>渠道来源:</label>
+                            <select>
+                                <option>请选择</option>
+                                <option>大模型</option>
+                                <option>人工</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>客服人员:</label>
+                            <select><option>请选择</option><option>张三</option><option>李四</option></select>
+                        </div>
+                        <div class="form-group">
+                            <label>创建时间:</label>
+                            <input type="date" placeholder="年 / 月 / 日">
+                        </div>
+                        <div class="form-group">
+                            <label>下载情况:</label>
+                            <select><option>请选择</option><option>未下载</option><option>已下载</option></select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-default">↻ 重置</button>
+                        <button class="btn btn-primary">🔍 搜索</button>
+                    </div>
+                </section>
+
+                <!-- Table Section -->
+                <section class="table-section">
+                    <div class="table-toolbar">
+                        <button class="btn btn-primary" id="downloadBtn">⬇ 下载</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>创建时间</th>
+                                <th>国家梯度</th>
+                                <th>国家</th>
+                                <th>国家代码</th>
+                                <th>渠道来源</th>
+                                <th>UID</th>
+                                <th>下载情况</th>
+                                <th>是否重复</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2026.7.10 14:30:00</td>
+                                <td>T1国家</td>
+                                <td>英国</td>
+                                <td>UK</td>
+                                <td>大模型</td>
+                                <td>83921003</td>
+                                <td><span class="tag tag-warning">未下载</span></td>
+                                <td><span class="tag tag-danger">是</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026.7.10 13:15:22</td>
+                                <td>T1国家</td>
+                                <td>美国</td>
+                                <td>US</td>
+                                <td>人工 (张三)</td>
+                                <td>83921004</td>
+                                <td><span class="tag tag-success">已下载</span></td>
+                                <td><span class="tag tag-default">否</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026.7.10 11:05:10</td>
+                                <td>T2国家</td>
+                                <td>澳大利亚</td>
+                                <td>AU</td>
+                                <td>大模型</td>
+                                <td>83921005</td>
+                                <td><span class="tag tag-warning">未下载</span></td>
+                                <td><span class="tag tag-default">否</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026.7.10 09:44:05</td>
+                                <td>T1国家</td>
+                                <td>英国</td>
+                                <td>UK</td>
+                                <td>人工 (李四)</td>
+                                <td>83921006</td>
+                                <td><span class="tag tag-success">已下载</span></td>
+                                <td><span class="tag tag-danger">是</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <span class="total">共 4 条记录</span>
+                        <select class="page-size"><option>10条/页</option></select>
+                        <div class="page-controls">
+                            <button class="page-btn">‹</button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">›</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>系统提示</h3>
+                <button class="close-btn" id="closeModalBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="prompt-content">
+                    <span class="warning-icon">!</span>
+                    <p>确认下载 <strong>20260710-T1国家/英国</strong> 表格吗？</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" id="cancelModalBtn">取消</button>
+                <button class="btn btn-primary" id="confirmModalBtn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
