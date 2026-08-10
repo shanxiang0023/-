@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>应用商店评论风险监控与预警系统 - 全链路业务流程图</title>
+    <!-- Mermaid.js 支持 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --primary: #2563eb;
+            --text-main: #0f172a;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-bar {
+            width: 100%;
+            max-width: 1060px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: #ffffff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #dbeafe;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .badge-style {
+            background: #fef08a;
+            color: #854d0e;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            border: 1px solid #fde047;
+        }
+
+        /* 流程图主卡片 */
+        .diagram-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 36px 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            max-width: 1060px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: auto;
+        }
+
+        /* 图例栏 */
+        .legend-bar {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            padding: 10px 24px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .legend-diamond {
+            width: 14px;
+            height: 14px;
+            background: #FFF7ED;
+            border: 2px solid #EA580C;
+            transform: rotate(45deg);
+        }
+
+        .legend-rect {
+            background: #E0F2FE;
+            border: 2px solid #0284C7;
+            border-radius: 4px;
+        }
+
+        .legend-db {
+            background: #DCFCE7;
+            border: 2px solid #16A34A;
+            border-radius: 4px;
+        }
+
+        .legend-subgraph {
+            background: #FEFCE8;
+            border: 2px solid #D4C359;
+            border-radius: 4px;
+        }
+
+        /* SVG 容器 */
+        .svg-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部状态栏 -->
+    <div class="header-bar">
+        <div class="header-left">
+            <a href="prototype_review_risk_alert.html" class="btn-back">← 返回原型系统</a>
+            <span class="page-title">应用商店评论风险监控与预警系统 · 全链路业务流程图</span>
+            <span class="badge-style">V2.0 需求架构规范</span>
+        </div>
+        <div style="font-size: 13px; color: #64748b;">
+            涵盖 16 语种标准词库 · 定时拉取 · 飞书强提醒 · 客服闭环
+        </div>
+    </div>
+
+    <!-- 流程图主画板 -->
+    <div class="diagram-card">
+        
+        <!-- 图例说明 -->
+        <div class="legend-bar">
+            <div class="legend-item">
+                <div class="legend-box legend-subgraph"></div>
+                <span>业务处理阶段 / 链路容器 (浅黄背景)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-diamond"></div>
+                <span>判断 / 分流节点 (橙色菱形)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-rect"></div>
+                <span>处理步骤 / 执行动作 (蓝色圆角框)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-db"></div>
+                <span>标准词库 / 配置数据库 (绿色圆柱)</span>
+            </div>
+        </div>
+
+        <!-- 矢量高保真流程图 (纯 SVG 矢量渲染，完全匹配参考图风格规范) -->
+        <div class="svg-container">
+            <svg width="980" height="1820" viewBox="0 0 980 1820" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- 箭头标头 -->
+                    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b"/>
+                    </marker>
+                    <!-- 阴影 -->
+                    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%" filterUnits="userSpaceOnUse">
+                        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.04"/>
+                    </filter>
+                </defs>
+
+                <!-- ================= 阶段 1: 预警策略与 16 语种词库配置 (管理后台 - 预警配置) ================= -->
+                <g transform="translate(60, 20)">
+                    <!-- 黄色背景大框 -->
+                    <rect x="0" y="0" width="860" height="250" rx="6" fill="#FEFCE8" stroke="#D4C359" stroke-width="1.8"/>
+                    <text x="430" y="28" font-size="14" font-weight="bold" fill="#713f12" text-anchor="middle">阶段一：预警策略与 16 语种标准词库配置 (管理后台 · 预警配置)</text>
+
+                    <!-- 左侧：16语种词库录入 -->
+                    <rect x="30" y="55" width="240" height="50" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="150" y="77" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">翻译团队交付 16 语种词库</text>
+                    <text x="150" y="94" font-size="11" font-weight="600" fill="#0284c7" text-anchor="middle">(单个网格录入 / 批量Excel导入)</text>
+
+                    <!-- 中间：数据库圆柱体 -->
+                    <g transform="translate(340, 50)">
+                        <path d="M 0 20 L 0 65 A 90 20 0 0 0 180 65 L 180 20 Z" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+                        <ellipse cx="90" cy="20" rx="90" ry="18" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+                        <text x="90" y="52" font-size="13" font-weight="bold" fill="#14532d" text-anchor="middle">16 语种标准敏感词库</text>
+                        <text x="90" y="70" font-size="11" font-weight="600" fill="#166534" text-anchor="middle">&amp; 预警监控策略库</text>
+                    </g>
+
+                    <!-- 右侧：新建策略 -->
+                    <rect x="590" y="55" width="240" height="50" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="710" y="77" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">新建预警监控策略</text>
+                    <text x="710" y="94" font-size="11" font-weight="600" fill="#0284c7" text-anchor="middle">(配置触发时间/频次/16语言/星级)</text>
+
+                    <!-- 连接线: 词库录入 -> 数据库 -->
+                    <path d="M 270 80 L 340 80" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 连接线: 新建策略 -> 菱形状态判断 -->
+                    <path d="M 710 105 L 710 145" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 菱形: 策略是否启用 (开关 Switch) -->
+                    <g transform="translate(640, 145)">
+                        <polygon points="70,0 140,40 70,80 0,40" fill="#FFF7ED" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+                        <text x="70" y="45" font-size="13" font-weight="bold" fill="#9a3412" text-anchor="middle">策略是否启用?</text>
+                    </g>
+
+                    <!-- 启用流向数据库 -->
+                    <path d="M 640 185 L 430 185 L 430 135" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                    <g transform="translate(480, 165)">
+                        <rect x="0" y="0" width="100" height="22" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+                        <text x="50" y="15" font-size="11" font-weight="700" fill="#166534" text-anchor="middle">开启状态 (Enabled)</text>
+                    </g>
+                </g>
+
+                <!-- 阶段 1 -> 阶段 2 连线 -->
+                <path d="M 490 270 L 490 325" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                <g transform="translate(415, 288)">
+                    <rect x="0" y="0" width="150" height="24" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+                    <text x="75" y="16" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">下发多语区定时调度策略</text>
+                </g>
+
+
+                <!-- ================= 阶段 2: 多语区双端数据定时拉取调度 (ReviewSync 调度引擎) ================= -->
+                <g transform="translate(60, 330)">
+                    <!-- 黄色背景大框 -->
+                    <rect x="0" y="0" width="860" height="240" rx="6" fill="#FEFCE8" stroke="#D4C359" stroke-width="1.8"/>
+                    <text x="430" y="28" font-size="14" font-weight="bold" fill="#713f12" text-anchor="middle">阶段二：多语区双端数据定时拉取调度 (服务端 · ReviewSync 调度引擎)</text>
+
+                    <!-- 步骤 2.1: 定时调度器触发 -->
+                    <rect x="50" y="55" width="340" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="220" y="83" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">定时调度器触发 (按各语区时区与配置频次)</text>
+
+                    <!-- 箭头 2.1 -> 2.2 -->
+                    <path d="M 390 78 L 470 78" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 步骤 2.2: 调取双端 API -->
+                    <rect x="470" y="55" width="340" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="640" y="83" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">调用 Google Play &amp; App Store 官方 API</text>
+
+                    <!-- 箭头 2.2 -> 2.3 -->
+                    <path d="M 640 101 L 640 145" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 步骤 2.3: 全量拉取 1~5星评论 -->
+                    <rect x="470" y="145" width="340" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="640" y="173" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">全量拉取 1~5 星评论 (重点: 1星差评 &amp; 5星诱导好评)</text>
+
+                    <!-- 箭头 2.3 -> 2.4 -->
+                    <path d="M 470 168 L 390 168" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 步骤 2.4: 数据标准化与清洗 -->
+                    <rect x="50" y="145" width="340" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="220" y="173" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">评论元数据清洗与标准化 (评分/用户/语言/内容)</text>
+                </g>
+
+                <!-- 阶段 2 -> 阶段 3 连线 -->
+                <path d="M 220 570 L 220 625 L 490 625 L 490 645" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                <g transform="translate(415, 613)">
+                    <rect x="0" y="0" width="150" height="24" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+                    <text x="75" y="16" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">标准化评论送入风控引擎</text>
+                </g>
+
+
+                <!-- ================= 阶段 3: 16 语种风控匹配与分级判定 ================= -->
+                <g transform="translate(60, 650)">
+                    <!-- 黄色背景大框 -->
+                    <rect x="0" y="0" width="860" height="300" rx="6" fill="#FEFCE8" stroke="#D4C359" stroke-width="1.8"/>
+                    <text x="430" y="28" font-size="14" font-weight="bold" fill="#713f12" text-anchor="middle">阶段三：16 语种风控匹配与分级判定 (智能风控分级引擎)</text>
+
+                    <!-- 菱形 3.1: 匹配 16 语种敏感词 -->
+                    <g transform="translate(340, 50)">
+                        <polygon points="90,0 180,45 90,90 0,45" fill="#FFF7ED" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+                        <text x="90" y="50" font-size="13" font-weight="bold" fill="#9a3412" text-anchor="middle">命中 16 语种敏感词?</text>
+                    </g>
+
+                    <!-- 分支 1: 未命中 -> 无风险 -->
+                    <path d="M 520 95 L 680 95 L 680 160" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                    <g transform="translate(565, 75)">
+                        <rect x="0" y="0" width="80" height="22" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+                        <text x="40" y="15" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">未命中规则</text>
+                    </g>
+
+                    <rect x="540" y="160" width="280" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="680" y="188" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">标记为无风险，流转入常规评论池</text>
+
+                    <!-- 分支 2: 命中 -> 匹配风险分类并打标 -->
+                    <path d="M 340 95 L 190 95 L 190 145" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                    <g transform="translate(210, 75)">
+                        <rect x="0" y="0" width="105" height="22" rx="4" fill="#FEE2E2" stroke="#F87171" stroke-width="1"/>
+                        <text x="52" y="15" font-size="11" font-weight="700" fill="#991B1B" text-anchor="middle">命中敏感词条</text>
+                    </g>
+
+                    <rect x="40" y="145" width="300" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="190" y="173" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">匹配风险分类 (好评返币/扣费/举报，中文展示)</text>
+
+                    <!-- 箭头 -> 打标等级 -->
+                    <path d="M 190 191 L 190 225" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <rect x="40" y="225" width="300" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="190" y="253" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">打上对应 P0 / P1 / P2 / P3 风险等级标签</text>
+                </g>
+
+                <!-- 阶段 3 -> 阶段 4 连线 -->
+                <path d="M 190 950 L 190 1005 L 490 1005 L 490 1025" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                <g transform="translate(425, 993)">
+                    <rect x="0" y="0" width="130" height="24" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+                    <text x="65" y="16" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">触发分级预警通道</text>
+                </g>
+
+
+                <!-- ================= 阶段 4: 分级预警与通知路由 (飞书机器人预警通道) ================= -->
+                <g transform="translate(60, 1030)">
+                    <!-- 黄色背景大框 -->
+                    <rect x="0" y="0" width="860" height="260" rx="6" fill="#FEFCE8" stroke="#D4C359" stroke-width="1.8"/>
+                    <text x="430" y="28" font-size="14" font-weight="bold" fill="#713f12" text-anchor="middle">阶段四：分级预警与通知路由 (预警通道 · Feishu Risk Bot)</text>
+
+                    <!-- 菱形 4.1: 风险等级判定 -->
+                    <g transform="translate(350, 45)">
+                        <polygon points="80,0 160,40 80,80 0,40" fill="#FFF7ED" stroke="#EA580C" stroke-width="2" filter="url(#shadow)"/>
+                        <text x="80" y="45" font-size="13" font-weight="bold" fill="#9a3412" text-anchor="middle">判定风险等级</text>
+                    </g>
+
+                    <!-- 左分支: P0 极高 / P1 高危 -->
+                    <path d="M 350 85 L 180 85 L 180 145" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                    <g transform="translate(70, 100)">
+                        <rect x="0" y="0" width="150" height="22" rx="4" fill="#FEE2E2" stroke="#F87171" stroke-width="1"/>
+                        <text x="75" y="15" font-size="11" font-weight="700" fill="#991B1B" text-anchor="middle">🔴 P0 极高 / 🟠 P1 高危</text>
+                    </g>
+
+                    <rect x="30" y="145" width="300" height="50" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="180" y="167" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">飞书机器人 1 分钟即时卡片强推</text>
+                    <text x="180" y="184" font-size="11" font-weight="600" fill="#0284c7" text-anchor="middle">(@值班负责人 + DeepLink一键直达 + 电话加急)</text>
+
+                    <!-- 右分支: P2 中危 / P3 低危 -->
+                    <path d="M 510 85 L 680 85 L 680 145" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                    <g transform="translate(610, 100)">
+                        <rect x="0" y="0" width="140" height="22" rx="4" fill="#FEF3C7" stroke="#FBBF24" stroke-width="1"/>
+                        <text x="70" y="15" font-size="11" font-weight="700" fill="#92400E" text-anchor="middle">🟡 P2 中危 / 🟢 P3 低危</text>
+                    </g>
+
+                    <rect x="530" y="145" width="300" height="50" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="680" y="167" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">汇总生成聚合统计分析简报</text>
+                    <text x="680" y="184" font-size="11" font-weight="600" fill="#0284c7" text-anchor="middle">(每 4 小时 / 每日定期推送至运营群)</text>
+                </g>
+
+                <!-- 阶段 4 -> 阶段 5 连线 -->
+                <path d="M 180 1290 L 180 1340 L 490 1340 L 490 1360" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+                <g transform="translate(425, 1328)">
+                    <rect x="0" y="0" width="130" height="24" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+                    <text x="65" y="16" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">客服介入处置闭环</text>
+                </g>
+
+
+                <!-- ================= 阶段 5: 客服日常处置与闭环归档 (管理后台 - 商店回复) ================= -->
+                <g transform="translate(60, 1370)">
+                    <!-- 黄色背景大框 -->
+                    <rect x="0" y="0" width="860" height="350" rx="6" fill="#FEFCE8" stroke="#D4C359" stroke-width="1.8"/>
+                    <text x="430" y="28" font-size="14" font-weight="bold" fill="#713f12" text-anchor="middle">阶段五：客服日常处置与闭环归档 (管理后台 · 商店回复页面)</text>
+
+                    <!-- 步骤 5.1: 点击直达 / 筛选定位 -->
+                    <rect x="230" y="50" width="400" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="430" y="78" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">点击飞书卡片 DeepLink 直达 / 筛选【风险等级】定位评论</text>
+
+                    <!-- 箭头 5.1 -> 5.2 -->
+                    <path d="M 430 96 L 430 130" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 步骤 5.2: 查看原生评价并回复 -->
+                    <rect x="230" y="130" width="400" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="430" y="158" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">查看原生评价内容 (无高亮/无多余翻译)，选用公关话术回复</text>
+
+                    <!-- 箭头 5.2 -> 5.3 -->
+                    <path d="M 430 176 L 430 210" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 步骤 5.3: 提交回复至官方商店 -->
+                    <rect x="230" y="210" width="400" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="430" y="238" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">一键同步提交回复至 Google Play / App Store</text>
+
+                    <!-- 箭头 5.3 -> 5.4 -->
+                    <path d="M 430 256 L 430 290" stroke="#1e293b" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+
+                    <!-- 步骤 5.4: 状态更新与归档 -->
+                    <rect x="230" y="290" width="400" height="46" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+                    <text x="430" y="318" font-size="13" font-weight="bold" fill="#0369a1" text-anchor="middle">评论状态更新为【已回复】，闭环归档并记录响应 SLA 耗时</text>
+                </g>
+
+                <!-- 最终完成标识 -->
+                <g transform="translate(390, 1750)">
+                    <rect x="0" y="0" width="200" height="36" rx="18" fill="#10B981" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
+                    <text x="100" y="23" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">✅ 评论风险全链路闭环完成</text>
+                </g>
+
+            </svg>
+        </div>
+
+    </div>
+
+</body>
+</html>
