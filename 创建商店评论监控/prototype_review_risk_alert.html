@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetShort管理系统 - 应用商店评论风险监控与预警平台 (高保真原型)</title>
+    <style>
+        :root {
+            --primary: #2d5cf6;
+            --primary-hover: #1e45cb;
+            --primary-light: #eef2ff;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --warning: #f59e0b;
+            --warning-bg: #fffbeb;
+            --info: #3b82f6;
+            --success: #10b981;
+            --success-bg: #ecfdf5;
+            --dark: #1e293b;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --sidebar-bg: #ffffff;
+            --sidebar-width: 220px;
+            --header-height: 56px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 13px;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-logo {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .brand-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .menu {
+            flex: 1;
+            padding: 12px 0;
+            overflow-y: auto;
+        }
+
+        .menu-group-title {
+            padding: 8px 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            gap: 10px;
+        }
+
+        .menu-item:hover {
+            background-color: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .menu-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            border-right: 3px solid var(--primary);
+        }
+
+        .menu-item .badge-new {
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .sub-menu {
+            padding-left: 20px;
+        }
+
+        /* 主区域 */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: var(--header-height);
+            background-color: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .breadcrumbs {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .breadcrumbs span.current {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .duty-badge {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 内容区 */
+        .content {
+            flex: 1;
+            padding: 16px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 标签切换 */
+        .tabs-nav {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        /* 卡片容器 */
+        .card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            padding: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 筛选栏 */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            background: #fff;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-label {
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .input, .select {
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+            background: #fff;
+            color: var(--text-main);
+        }
+
+        .input:focus, .select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(45, 92, 246, 0.1);
+        }
+
+        /* 按钮 */
+        .btn {
+            height: 32px;
+            padding: 0 14px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-default {
+            background-color: #fff;
+            border-color: var(--border);
+            color: var(--text-main);
+        }
+        .btn-default:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: #fff;
+        }
+
+        .btn-warning {
+            background-color: #f59e0b;
+            color: #fff;
+        }
+
+        .btn-sm {
+            height: 26px;
+            padding: 0 8px;
+            font-size: 11px;
+        }
+
+        /* 表格样式 */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            vertical-align: middle;
+            font-size: 12px;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* 风险等级徽章 */
+        .risk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .risk-p0 {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+
+        .risk-p1 {
+            background-color: #ffedd5;
+            color: #c2410c;
+            border: 1px solid #fdba74;
+        }
+
+        .risk-p2 {
+            background-color: #fef9c3;
+            color: #a16207;
+            border: 1px solid #fde047;
+        }
+
+        .risk-p3 {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+
+        /* 关键词高亮 */
+        .kw-highlight {
+            background-color: #fef08a;
+            color: #854d0e;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .kw-tag {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            display: inline-block;
+            margin: 2px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 模态弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 10px;
+            width: 720px;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            animation: modalIn 0.2s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #f8fafc;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* 关键词弹窗 Tab 样式 */
+        .kw-modal-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            gap: 24px;
+            margin-bottom: 4px;
+        }
+
+        .kw-tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 4px 10px 4px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .kw-tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .kw-tab-btn.active {
+            color: var(--primary);
+        }
+
+        .kw-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* 16 语种网格 (2列排布，紧凑清晰) */
+        .trans-grid-16 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px 14px;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .trans-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .trans-lang {
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trans-lang-code {
+            font-size: 11px;
+            font-weight: normal;
+            color: #94a3b8;
+        }
+
+        /* 批量上传拖拽框 */
+        .kw-upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 24px 16px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .kw-upload-box:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        /* 飞书预览卡片 */
+        .feishu-preview {
+            background: #ffffff;
+            border: 1px solid #dee0e3;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            width: 380px;
+            font-size: 12px;
+        }
+
+        .feishu-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f1f2;
+            color: #d93026;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .feishu-row {
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .feishu-label {
+            color: #8f959e;
+        }
+
+        .feishu-btn-row {
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #f0f1f2;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 语区卡片 */
+        .region-card {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+
+        .region-badge {
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--dark);
+        }
+
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">N</div>
+            <div class="brand-title">NetShort管理系统</div>
+        </div>
+        <div class="menu">
+            <div class="menu-group-title">运营与客服</div>
+            <div class="menu-item" id="menu-item-reply" onclick="switchNav('reply')">
+                <span>💬 商店回复</span>
+            </div>
+            <div class="menu-item active" id="menu-item-alert" onclick="switchNav('alert')">
+                <span>🛡️ 预警配置</span>
+                <span class="badge-new">NEW</span>
+            </div>
+            <div class="menu-item">
+                <span>📋 投诉/反馈</span>
+            </div>
+            <div class="menu-item">
+                <span>📑 模板管理</span>
+            </div>
+            <div class="menu-item">
+                <span>🏷️ 标签管理</span>
+            </div>
+            <div class="menu-group-title">系统设置</div>
+            <div class="menu-item">
+                <span>⚙️ 权限与配置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 顶部导航 -->
+        <div class="header">
+            <div class="breadcrumbs">
+                <span>客服系统</span> / 
+                <span id="breadcrumb-title" class="current">预警配置</span>
+            </div>
+            <div class="header-actions">
+                <div class="duty-badge">
+                    <span>🟢 监控机器人: 正常运行中 (最近同步: 2分钟前)</span>
+                </div>
+                <div style="font-weight: 500;">零时区: 8-4 9:59</div>
+                <a href="flowchart_risk_alert.html" target="_blank" class="btn btn-primary btn-sm" style="text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">📊 业务流程图</a>
+                <button class="btn btn-default btn-sm" onclick="showFeishuDemo()">🔔 模拟飞书告警卡片</button>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content">
+
+            <!-- 视图 1: 预警配置 (新增后台子页面) -->
+            <div id="view-alert-config" style="display: flex; flex-direction: column; gap: 14px;">
+                <!-- 顶部搜索筛选栏 (多维组合检索) -->
+                <div class="card" style="padding: 16px 20px; background: #fff;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                        <div class="filter-item">
+                            <span class="filter-label">风险等级</span>
+                            <select class="select" id="alert-search-risk" style="min-width: 130px;">
+                                <option value="all">全部等级</option>
+                                <option value="p0">🔴 P0 极高</option>
+                                <option value="p1">🟠 P1 高危</option>
+                                <option value="p2">🟡 P2 中危</option>
+                                <option value="p3">🟢 P3 低危</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">语言</span>
+                            <select class="select" id="alert-search-lang" style="min-width: 120px;">
+                                <option value="all">全部语言</option>
+                                <option value="英语">英语 (EN)</option>
+                                <option value="越南语">越南语 (VI)</option>
+                                <option value="韩语">韩语 (KO)</option>
+                                <option value="西班牙语">西班牙语 (ES)</option>
+                                <option value="葡萄牙语">葡萄牙语 (PT)</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">状态</span>
+                            <select class="select" id="alert-search-status" style="min-width: 100px;">
+                                <option value="all">全部状态</option>
+                                <option value="active">🟢 启用中</option>
+                                <option value="inactive">⚪ 已停用</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">推送时间</span>
+                            <input type="text" class="input" id="alert-search-time" placeholder="如 09:00 或 08:00-24:00" style="width: 160px;">
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">创建人</span>
+                            <input type="text" class="input" id="alert-search-creator" placeholder="输入创建人姓名" style="width: 120px;">
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-left: auto;">
+                            <button class="btn btn-primary" onclick="filterAlertStrategyTable()">🔍 搜索</button>
+                            <button class="btn btn-default" onclick="resetAlertStrategyFilters()">🔄 重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 功能按钮栏 (三大核心入口) -->
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="openCreateStrategyModal()" style="display: flex; align-items: center; gap: 6px; font-weight: 600;">
+                            <span>➕</span> 新建
+                        </button>
+                        <button class="btn btn-default" onclick="openKwModal()" style="display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #cbd5e1; font-weight: 600;">
+                            <span>📝</span> 关键词录入
+                        </button>
+                        <button class="btn btn-default" onclick="openRiskLevelModal()" style="display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #cbd5e1; font-weight: 600;">
+                            <span>🏷️</span> 风险等级录入
+                        </button>
+                    </div>
+                    <div style="font-size: 12px; color: #64748b;">
+                        已配置监控策略：<strong style="color: #2563eb;" id="strategy-count">5</strong> 条 ｜ 监控服务：<span style="color: #10b981; font-weight: 600;">● 自动调度中</span>
+                    </div>
+                </div>
+
+                <!-- 预警策略数据列表表格 -->
+                <div class="card" style="padding: 0; overflow: hidden; background: #fff;">
+                    <div class="table-responsive">
+                        <table id="alert-strategy-table">
+                            <thead>
+                                <tr>
+                                    <th width="80">ID</th>
+                                    <th width="100">风险等级</th>
+                                    <th>风险分类 (匹配关键词·中文)</th>
+                                    <th width="150">触发时间</th>
+                                    <th width="110">触发频次</th>
+                                    <th width="150">语言范围</th>
+                                    <th width="120">星级范围</th>
+                                    <th width="80">状态</th>
+                                    <th width="100">创建人</th>
+                                    <th width="110">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="row-strat-1">
+                                    <td><span style="font-family: monospace; font-weight: 600; color: #475569;">0001</span></td>
+                                    <td><span class="risk-badge risk-p0">🔴 P0 极高</span></td>
+                                    <td>
+                                        <div style="font-weight: 600; color: #1e293b;">好评返金币 / 诱导好评</div>
+                                    </td>
+                                    <td><span style="color: #0f172a; font-weight: 500;">每日 08:00 - 24:00</span></td>
+                                    <td><span style="color: #2563eb; font-weight: 600;">每 1 小时 / 次</span></td>
+                                    <td><span class="tag tag-lang">英语</span> <span class="tag tag-lang">越南语</span> <span class="tag tag-lang">韩语</span></td>
+                                    <td><span class="star-pill">1星, 2星, 3星</span></td>
+                                    <td>
+                                        <label class="switch-toggle" style="transform: scale(0.85);"><input type="checkbox" checked onchange="toggleStrategyStatus(this)"><span class="slider"></span></label>
+                                    </td>
+                                    <td>admin (张三)</td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openCreateStrategyModal(true, '0001')">编辑</a>
+                                            <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteStrategy('0001')">删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="row-strat-2">
+                                    <td><span style="font-family: monospace; font-weight: 600; color: #475569;">0002</span></td>
+                                    <td><span class="risk-badge risk-p0">🔴 P0 极高</span></td>
+                                    <td>
+                                        <div style="font-weight: 600; color: #1e293b;">官方举报 / 法律诉讼 / 监管</div>
+                                    </td>
+                                    <td><span style="color: #0f172a; font-weight: 500;">全天 24 小时</span></td>
+                                    <td><span style="color: #2563eb; font-weight: 600;">每 1 小时 / 次</span></td>
+                                    <td><span class="tag tag-lang">全部语言 (5种)</span></td>
+                                    <td><span class="star-pill">1星, 2星</span></td>
+                                    <td>
+                                        <label class="switch-toggle" style="transform: scale(0.85);"><input type="checkbox" checked onchange="toggleStrategyStatus(this)"><span class="slider"></span></label>
+                                    </td>
+                                    <td>admin (张三)</td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openCreateStrategyModal(true, '0002')">编辑</a>
+                                            <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteStrategy('0002')">删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="row-strat-3">
+                                    <td><span style="font-family: monospace; font-weight: 600; color: #475569;">0003</span></td>
+                                    <td><span class="risk-badge risk-p1">🟠 P1 高危</span></td>
+                                    <td>
+                                        <div style="font-weight: 600; color: #1e293b;">乱扣费 / 自动续费 / 退款欺诈</div>
+                                    </td>
+                                    <td><span style="color: #0f172a; font-weight: 500;">每日 09:00 - 22:00</span></td>
+                                    <td><span style="color: #2563eb; font-weight: 600;">每 2 小时 / 次</span></td>
+                                    <td><span class="tag tag-lang">英语</span> <span class="tag tag-lang">西班牙语</span></td>
+                                    <td><span class="star-pill">1星, 2星, 3星</span></td>
+                                    <td>
+                                        <label class="switch-toggle" style="transform: scale(0.85);"><input type="checkbox" checked onchange="toggleStrategyStatus(this)"><span class="slider"></span></label>
+                                    </td>
+                                    <td>李运营</td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openCreateStrategyModal(true, '0003')">编辑</a>
+                                            <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteStrategy('0003')">删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="row-strat-4">
+                                    <td><span style="font-family: monospace; font-weight: 600; color: #475569;">0004</span></td>
+                                    <td><span class="risk-badge risk-p2">🟡 P2 中危</span></td>
+                                    <td>
+                                        <div style="font-weight: 600; color: #1e293b;">充值没到账 / VIP解锁失败</div>
+                                    </td>
+                                    <td><span style="color: #0f172a; font-weight: 500;">每日 10:00 - 20:00</span></td>
+                                    <td><span style="color: #2563eb; font-weight: 600;">每 4 小时 / 次</span></td>
+                                    <td><span class="tag tag-lang">全部语言</span></td>
+                                    <td><span class="star-pill">1星, 2星, 3星</span></td>
+                                    <td>
+                                        <label class="switch-toggle" style="transform: scale(0.85);"><input type="checkbox" checked onchange="toggleStrategyStatus(this)"><span class="slider"></span></label>
+                                    </td>
+                                    <td>王客服</td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openCreateStrategyModal(true, '0004')">编辑</a>
+                                            <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteStrategy('0004')">删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="row-strat-5">
+                                    <td><span style="font-family: monospace; font-weight: 600; color: #475569;">0005</span></td>
+                                    <td><span class="risk-badge risk-p3">🟢 P3 低危</span></td>
+                                    <td>
+                                        <div style="font-weight: 600; color: #1e293b;">剧集内容 / 翻译吐槽 / 播放卡顿</div>
+                                    </td>
+                                    <td><span style="color: #0f172a; font-weight: 500;">每日 09:00</span></td>
+                                    <td><span style="color: #2563eb; font-weight: 600;">每天 1 次</span></td>
+                                    <td><span class="tag tag-lang">英语</span> <span class="tag tag-lang">韩语</span></td>
+                                    <td><span class="star-pill">1星 ~ 5星 (全量)</span></td>
+                                    <td>
+                                        <label class="switch-toggle" style="transform: scale(0.85);"><input type="checkbox" onchange="toggleStrategyStatus(this)"><span class="slider"></span></label>
+                                    </td>
+                                    <td>system</td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openCreateStrategyModal(true, '0005')">编辑</a>
+                                            <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteStrategy('0005')">删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 视图 2: 现有的【商店回复】页面 (功能增强版) -->
+            <div id="view-reply-page" style="display: none; flex-direction: column; gap: 14px;">
+                <!-- 商店类型 Tab (扁平风格对齐图2) -->
+                <div style="display: flex; gap: 24px; border-bottom: 2px solid #f1f5f9; padding-bottom: 2px;">
+                    <div style="font-size: 14px; font-weight: 600; color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 6px; cursor: pointer;">Google Play</div>
+                    <div style="font-size: 14px; font-weight: 500; color: #64748b; padding-bottom: 6px; cursor: pointer;">Apple Store</div>
+                </div>
+
+                <!-- 搜索筛选栏 (按图2双行规范布局) -->
+                <div class="card" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; background: #fff;">
+                    <!-- 第一行筛选 -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center;">
+                        <div class="filter-item">
+                            <span class="filter-label">评论时间</span>
+                            <input type="date" class="input" style="width: 130px;" placeholder="开始时间">
+                            <span style="color: #94a3b8;">-</span>
+                            <input type="date" class="input" style="width: 130px;" placeholder="结束时间">
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">评分</span>
+                            <select class="select" style="min-width: 120px;">
+                                <option value="">请选择评分</option>
+                                <option>1星</option>
+                                <option>2星</option>
+                                <option>3星</option>
+                                <option>4星</option>
+                                <option>5星</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">标签</span>
+                            <select class="select" style="min-width: 120px;">
+                                <option value="">请选择标签</option>
+                                <option>好评返币</option>
+                                <option>举报/诉讼</option>
+                                <option>扣费退款</option>
+                                <option>剧集好评</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">语言编码</span>
+                            <select class="select" style="min-width: 130px;">
+                                <option value="">请选择语言编码</option>
+                                <option>en (英语)</option>
+                                <option>vi (越南语)</option>
+                                <option>ko (韩语)</option>
+                                <option>es (西语)</option>
+                                <option>pt (葡语)</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label" style="color: #ef4444; font-weight: 600;">风险等级</span>
+                            <select class="select" id="table-filter-risk" onchange="filterReplyTable()" style="min-width: 130px; border-color: #fca5a5; background: #fff5f5; color: #b91c1c; font-weight: 500;">
+                                <option value="all">请选择风险等级</option>
+                                <option value="p0">🔴 P0 极高</option>
+                                <option value="p1">🟠 P1 高危</option>
+                                <option value="p2">🟡 P2 中危</option>
+                                <option value="p3">🟢 P3 低危</option>
+                                <option value="none">⚪ 无风险</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 第二行筛选 -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center;">
+                        <div class="filter-item">
+                            <span class="filter-label">回复时间</span>
+                            <input type="date" class="input" style="width: 130px;" placeholder="开始时间">
+                            <span style="color: #94a3b8;">-</span>
+                            <input type="date" class="input" style="width: 130px;" placeholder="结束时间">
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">回复状态</span>
+                            <select class="select" style="min-width: 120px;">
+                                <option value="">请选择回复状态</option>
+                                <option>未回复</option>
+                                <option>已回复</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">关键词</span>
+                            <input type="text" class="input" id="table-filter-kw" placeholder="请输入关键词..." style="width: 160px;">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="filterReplyTable()">🔍 搜索</button>
+                            <button class="btn btn-default" onclick="resetReplyFilters()">🔄 重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 批量操作栏 (对齐图2按钮样式与颜色) -->
+                <div style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
+                    <button class="btn" style="background: #60a5fa; color: #fff; border: none; font-weight: 500;">批量回复</button>
+                    <button class="btn" style="background: #60a5fa; color: #fff; border: none; font-weight: 500;">批量编辑</button>
+                    <button class="btn" style="background: #f59e0b; color: #fff; border: none; font-weight: 500;">导出</button>
+                </div>
+
+                <!-- 评论数据列表表格 (已取消黄色高亮，已删除AI翻译多余文本) -->
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <div class="table-responsive">
+                        <table id="reply-table">
+                            <thead>
+                                <tr>
+                                    <th width="35"><input type="checkbox"></th>
+                                    <th width="85">评分</th>
+                                    <th width="100">风险等级</th>
+                                    <th>评价内容</th>
+                                    <th width="120">评论人</th>
+                                    <th width="150">评论时间</th>
+                                    <th width="90">语言编码</th>
+                                    <th width="100">标签</th>
+                                    <th width="90">回复状态</th>
+                                    <th width="80">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: #fff5f5;">
+                                    <td><input type="checkbox"></td>
+                                    <td style="font-weight: 600; color: #334155;">5星</td>
+                                    <td><span class="risk-badge risk-p0">🔴 P0 极高</span></td>
+                                    <td style="color: #1e293b; font-size: 13px;">Tôi đánh giá 5 sao rồi, cho tôi thêm xu như đã hứa nhé!</td>
+                                    <td>hientran_99</td>
+                                    <td>2026-08-04 09:30:12</td>
+                                    <td>vi</td>
+                                    <td><span style="background: #f1f5f9; color: #334155; padding: 2px 8px; border-radius: 4px; font-size: 11px;">好评返币</span></td>
+                                    <td><span style="color: #ef4444; font-weight: 600;">未回复</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="alert('进入回复窗口')">回复</button>
+                                    </td>
+                                </tr>
+                                <tr style="background: #fff8f5;">
+                                    <td><input type="checkbox"></td>
+                                    <td style="font-weight: 600; color: #334155;">1星</td>
+                                    <td><span class="risk-badge risk-p0">🔴 P0 极高</span></td>
+                                    <td style="color: #1e293b; font-size: 13px;">This app is a pure scam! Charged me $49.99 without permission. I will report to Google Play and my lawyer!</td>
+                                    <td>John Miller</td>
+                                    <td>2026-08-04 09:12:05</td>
+                                    <td>en</td>
+                                    <td><span style="background: #f1f5f9; color: #334155; padding: 2px 8px; border-radius: 4px; font-size: 11px;">举报/诉讼</span></td>
+                                    <td><span style="color: #ef4444; font-weight: 600;">未回复</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="alert('进入回复窗口')">回复</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td style="font-weight: 600; color: #334155;">2星</td>
+                                    <td><span class="risk-badge risk-p1">🟠 P1 高危</span></td>
+                                    <td style="color: #1e293b; font-size: 13px;">광고에서는 무제한 무료라고 해놓고 매주 결제되었습니다. 환불해주세요!</td>
+                                    <td>김민수</td>
+                                    <td>2026-08-04 08:45:00</td>
+                                    <td>ko</td>
+                                    <td><span style="background: #f1f5f9; color: #334155; padding: 2px 8px; border-radius: 4px; font-size: 11px;">扣费退款</span></td>
+                                    <td><span style="color: #64748b;">已回复</span></td>
+                                    <td>
+                                        <button class="btn btn-default btn-sm" onclick="alert('查看回复记录')">查看</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td style="font-weight: 600; color: #334155;">3星</td>
+                                    <td><span class="risk-badge risk-p2">🟡 P2 中危</span></td>
+                                    <td style="color: #1e293b; font-size: 13px;">Paguei 10 dólares para desbloquear episódios e o saldo não entrou na conta.</td>
+                                    <td>Carlos Silva</td>
+                                    <td>2026-08-04 07:15:33</td>
+                                    <td>pt</td>
+                                    <td><span style="background: #f1f5f9; color: #334155; padding: 2px 8px; border-radius: 4px; font-size: 11px;">充值问题</span></td>
+                                    <td><span style="color: #ef4444; font-weight: 600;">未回复</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="alert('进入回复窗口')">回复</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td style="font-weight: 600; color: #334155;">4星</td>
+                                    <td><span class="risk-badge risk-none">⚪ 无风险</span></td>
+                                    <td style="color: #1e293b; font-size: 13px;">Drama is very good, but update is a bit slow. Please release more episodes!</td>
+                                    <td>Sarah J.</td>
+                                    <td>2026-08-04 06:20:11</td>
+                                    <td>en</td>
+                                    <td><span style="background: #f1f5f9; color: #334155; padding: 2px 8px; border-radius: 4px; font-size: 11px;">剧集好评</span></td>
+                                    <td><span style="color: #64748b;">已回复</span></td>
+                                    <td>
+                                        <button class="btn btn-default btn-sm" onclick="alert('查看回复记录')">查看</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 1：【新建预警策略】弹窗 (严格符合用户框架) -->
+    <div class="modal-overlay" id="modal-create-strategy">
+        <div class="modal" style="width: 580px;">
+            <div class="modal-header">
+                <div class="modal-title" id="strategy-modal-title">➕ 新建预警监控策略</div>
+                <button class="modal-close" onclick="closeCreateStrategyModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 4px;">关联风险等级 <span style="color:red;">*</span></label>
+                    <select class="select" id="strat-risk-select" style="width: 100%; height: 36px;">
+                        <option value="p0">🔴 P0 极高风险</option>
+                        <option value="p1">🟠 P1 高危风险</option>
+                        <option value="p2">🟡 P2 中危风险</option>
+                        <option value="p3">🟢 P3 低危风险</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="font-weight: 600; display: block; margin-bottom: 4px;">触发时间 (每天几点推送) <span style="color:red;">*</span></label>
+                        <input type="text" id="strat-trigger-time" class="input" value="每日 08:00 - 24:00" placeholder="如 08:00 - 24:00 或 09:00" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-weight: 600; display: block; margin-bottom: 4px;">触发频次 (推送时间) <span style="color:red;">*</span></label>
+                        <select class="select" id="strat-frequency-select" style="width: 100%; height: 36px;">
+                            <option value="每 1 小时 / 次">每 1 小时 / 次</option>
+                            <option value="每 2 小时 / 次">每 2 小时 / 次</option>
+                            <option value="每 4 小时 / 次">每 4 小时 / 次</option>
+                            <option value="每天 1 次">每天 1 次</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 6px;">生效语言 (支持多选) <span style="color:red;">*</span></label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-lang" value="英语" checked> 英语 (EN)</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-lang" value="越南语" checked> 越南语 (VI)</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-lang" value="韩语" checked> 韩语 (KO)</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-lang" value="西班牙语"> 西班牙语 (ES)</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-lang" value="葡萄牙语"> 葡萄牙语 (PT)</label>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 6px;">星级范围 (1-5星，可多选) <span style="color:red;">*</span></label>
+                    <div style="display: flex; gap: 16px; background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-star" value="1星" checked> 1星</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-star" value="2星" checked> 2星</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-star" value="3星" checked> 3星</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-star" value="4星"> 4星</label>
+                        <label style="cursor: pointer;"><input type="checkbox" name="strat-star" value="5星"> 5星</label>
+                    </div>
+                </div>
+
+                <!-- 新增状态开关 (对应用户批注) -->
+                <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <div>
+                        <span style="font-weight: 600; color: #1e293b;">状态</span>
+                        <span style="font-size: 12px; color: #64748b; margin-left: 8px;">启用后将按设定的频次与时间进行监控推送</span>
+                    </div>
+                    <label class="switch-toggle" style="margin-bottom: 0;">
+                        <input type="checkbox" id="strat-status-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeCreateStrategyModal()">返回</button>
+                <button class="btn btn-primary" onclick="saveStrategy()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 2：【关键词录入与分级】弹窗 (支持单个录入与批量上传，覆盖16种语言) -->
+    <div class="modal-overlay" id="modal-add-kw">
+        <div class="modal" style="width: 720px;">
+            <div class="modal-header">
+                <div class="modal-title">📝 关键词录入与分级</div>
+                <button class="modal-close" onclick="closeKwModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding-bottom: 10px;">
+                <!-- Tab 页签切换 -->
+                <div class="kw-modal-tabs">
+                    <button class="kw-tab-btn active" id="tab-btn-single" onclick="switchKwTab('single')">单个录入 (16种语言)</button>
+                    <button class="kw-tab-btn" id="tab-btn-batch" onclick="switchKwTab('batch')">批量上传 (Excel / CSV 导入)</button>
+                </div>
+
+                <!-- 模式 A：单个录入 -->
+                <div id="kw-tab-single-content" style="display: flex; flex-direction: column; gap: 14px;">
+                    <div>
+                        <label style="font-weight: 600; display: block; margin-bottom: 4px;">输入关键词 (中文主词) <span style="color:red;">*</span></label>
+                        <input type="text" id="modal-zh-kw" class="input" value="好评返金币" placeholder="请输入中文主词，如：好评返金币 / 官方举报 / 乱扣费" style="width: 100%; height: 36px;">
+                    </div>
+
+                    <div>
+                        <label style="font-weight: 600; display: block; margin-bottom: 6px;">勾选归类的风险等级 <span style="color:red;">*</span></label>
+                        <div style="display: flex; gap: 16px; background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <label style="cursor: pointer;"><input type="radio" name="kw-risk-radio" value="P0" checked> 🔴 P0 极高</label>
+                            <label style="cursor: pointer;"><input type="radio" name="kw-risk-radio" value="P1"> 🟠 P1 高危</label>
+                            <label style="cursor: pointer;"><input type="radio" name="kw-risk-radio" value="P2"> 🟡 P2 中危</label>
+                            <label style="cursor: pointer;"><input type="radio" name="kw-risk-radio" value="P3"> 🟢 P3 低危</label>
+                        </div>
+                    </div>
+
+                    <!-- 16 语种录入网格 (由翻译团队提供) -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-weight: 600;">16 种出海语种映射词条录入 (支持直接粘贴翻译文本):</label>
+                            <span style="font-size: 11px; color: #64748b;">支持逗号分隔多个近义变体词</span>
+                        </div>
+                        <div class="trans-grid-16">
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>英语</span> <span class="trans-lang-code">EN</span></div>
+                                <input type="text" id="trans-en" class="input" value="coins for 5 stars, review reward, coins" placeholder="输入英语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>越南语</span> <span class="trans-lang-code">VI</span></div>
+                                <input type="text" id="trans-vi" class="input" value="đánh giá 5 sao nhận xu, thưởng xu" placeholder="输入越南语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>韩语</span> <span class="trans-lang-code">KO</span></div>
+                                <input type="text" id="trans-ko" class="input" value="5점 리뷰 코인 지급, 별점 보상" placeholder="输入韩语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>西班牙语</span> <span class="trans-lang-code">ES</span></div>
+                                <input type="text" id="trans-es" class="input" value="monedas por 5 estrellas, recompensas" placeholder="输入西班牙语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>葡萄牙语</span> <span class="trans-lang-code">PT</span></div>
+                                <input type="text" id="trans-pt" class="input" value="moedas por 5 estrelas, recompensa de moedas" placeholder="输入葡萄牙语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>泰语</span> <span class="trans-lang-code">TH</span></div>
+                                <input type="text" id="trans-th" class="input" value="เหรียญสำหรับ 5 ดาว, รางวัลรีวิว" placeholder="输入泰语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>印尼语</span> <span class="trans-lang-code">ID</span></div>
+                                <input type="text" id="trans-id" class="input" value="koin untuk ulasan bintang 5, hadiah koin" placeholder="输入印尼语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>繁体中文</span> <span class="trans-lang-code">ZH-TW</span></div>
+                                <input type="text" id="trans-zhtw" class="input" value="好評返金幣, 五星好評領幣, 返利" placeholder="输入繁体中文关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>日语</span> <span class="trans-lang-code">JA</span></div>
+                                <input type="text" id="trans-ja" class="input" value="星5レビューでコイン付与, コイン報酬" placeholder="输入日语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>马来语</span> <span class="trans-lang-code">MS</span></div>
+                                <input type="text" id="trans-ms" class="input" value="ganjaran syiling ulasan 5 bintang, syiling percuma" placeholder="输入马来语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>阿拉伯语</span> <span class="trans-lang-code">AR</span></div>
+                                <input type="text" id="trans-ar" class="input" value="عملات مقابل تقييم 5 نجوم, مكافأة تقييم" placeholder="输入阿拉伯语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>俄语</span> <span class="trans-lang-code">RU</span></div>
+                                <input type="text" id="trans-ru" class="input" value="монеты за 5 звезд, награда за отзыв" placeholder="输入俄语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>德语</span> <span class="trans-lang-code">DE</span></div>
+                                <input type="text" id="trans-de" class="input" value="Münzen für 5-Sterne-Bewertung, Belohnung" placeholder="输入德语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>法语</span> <span class="trans-lang-code">FR</span></div>
+                                <input type="text" id="trans-fr" class="input" value="pièces pour 5 étoiles, récompense avis" placeholder="输入法语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>土耳其语</span> <span class="trans-lang-code">TR</span></div>
+                                <input type="text" id="trans-tr" class="input" value="5 yıldız için jeton ödülü, puanlama ödülü" placeholder="输入土耳其语关键词...">
+                            </div>
+                            <div class="trans-item">
+                                <div class="trans-lang"><span>印地语</span> <span class="trans-lang-code">HI</span></div>
+                                <input type="text" id="trans-hi" class="input" value="5 स्टार समीक्षा के लिए सिक्के, समीक्षा इनाम" placeholder="输入印地语关键词...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模式 B：批量上传 (Excel / CSV) -->
+                <div id="kw-tab-batch-content" style="display: none; flex-direction: column; gap: 16px;">
+                    <!-- 步骤 1：下载模板 (已按批注删除副标题) -->
+                    <div style="background: #f1f5f9; padding: 12px 16px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-weight: 600; color: #1e293b; font-size: 13px;">第 1 步：获取翻译团队标准模版</div>
+                        <button class="btn btn-default" style="background: #fff; border: 1px solid #cbd5e1; font-weight: 500;" onclick="downloadKwTemplate()">📥 下载 16 语种标准模板 (.xlsx)</button>
+                    </div>
+
+                    <!-- 步骤 2：上传区域 -->
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 6px; font-size: 13px;">第 2 步：上传填写好的翻译文件 (.xlsx / .csv)</div>
+                        <div class="kw-upload-box" onclick="simulateSelectFile()">
+                            <div style="font-size: 32px; margin-bottom: 6px;">📂</div>
+                            <div style="font-weight: 600; color: #334155; font-size: 13px;" id="upload-box-title">点击选择文件 或 将翻译好的文件拖拽至此</div>
+                            <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;" id="upload-box-sub">支持 Excel (.xlsx, .xls) 及 CSV 格式，单个文件不超过 10MB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeKwModal()">取消</button>
+                <button class="btn btn-primary" id="kw-modal-submit-btn" onclick="handleKwSubmit()">确认录入</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 3：【风险等级录入】弹窗 -->
+    <div class="modal-overlay" id="modal-risk-level">
+        <div class="modal" style="width: 480px;">
+            <div class="modal-header">
+                <div class="modal-title">🏷️ 风险等级录入</div>
+                <button class="modal-close" onclick="closeRiskLevelModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 8px;">输入等级名称 <span style="color:red;">*</span></label>
+                    <input type="text" id="input-risk-level-name" class="input" placeholder="如：P0 极高风险 / P1 高危风险 / P4 特别关注" style="width: 100%; height: 38px;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeRiskLevelModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmRiskLevelEntry()">确认录入</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：飞书机器人预警模拟卡片 (辅助演示) -->
+    <div class="modal-overlay" id="modal-feishu">
+        <div class="modal" style="width: 440px;">
+            <div class="modal-header">
+                <div class="modal-title">🤖 飞书群内 AI 预警卡片展示效果</div>
+                <button class="modal-close" onclick="closeFeishuDemo()">✕</button>
+            </div>
+            <div class="modal-body" style="background: #f4f5f7; display: flex; justify-content: center; padding: 24px;">
+                <div class="feishu-preview">
+                    <div class="feishu-header">
+                        <span>🚨【NetShort 差评高危预警】</span>
+                        <span style="background: #d93026; color: white; padding: 1px 6px; border-radius: 4px; font-size: 10px;">P0 极高风险</span>
+                    </div>
+                    <div class="feishu-row">
+                        <span class="feishu-label">监控平台:</span> Google Play (US) <br>
+                        <span class="feishu-label">用户评分:</span> ⭐ (1星) <br>
+                        <span class="feishu-label">命中分类:</span> 官方举报 / 法律诉讼风险 <br>
+                        <span class="feishu-label">触发时间:</span> 2026-08-04 09:12:05
+                    </div>
+                    <div class="feishu-row" style="background: #fff1f0; padding: 8px; border-radius: 4px; border: 1px dashed #ffa39e; margin-top: 8px;">
+                        <strong>用户原评:</strong> "This app is a pure scam! Charged me $49.99 without permission. <span style="color:#d93026; font-weight:bold;">I will report to Google Play</span> and my lawyer!"
+                    </div>
+                    <div class="feishu-row" style="color: #1e293b; margin-top: 6px;">
+                        <span class="feishu-label">AI 翻译研判:</span> 用户声称遭遇未经授权的 49.99 美元大额扣款，并扬言向 Google Play 官方举报及起诉，存在下架审查风险！
+                    </div>
+                    <div class="feishu-btn-row">
+                        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="goToHandleReview()">🔗 一键直达后台处理</button>
+                        <button class="btn btn-default btn-sm" style="flex:1;" onclick="alert('已通知值班负责人')">📞 呼叫值班公关</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeFeishuDemo()">关闭预览</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchNav(type) {
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            const alertMenu = document.getElementById('menu-item-alert');
+            const replyMenu = document.getElementById('menu-item-reply');
+            const alertView = document.getElementById('view-alert-config');
+            const replyView = document.getElementById('view-reply-page');
+            const breadcrumb = document.getElementById('breadcrumb-title');
+
+            if (type === 'alert') {
+                if (alertView) alertView.style.display = 'flex';
+                if (replyView) replyView.style.display = 'none';
+                if (breadcrumb) breadcrumb.innerText = '预警配置';
+                if (alertMenu) alertMenu.classList.add('active');
+            } else if (type === 'reply') {
+                if (alertView) alertView.style.display = 'none';
+                if (replyView) replyView.style.display = 'flex';
+                if (breadcrumb) breadcrumb.innerText = '商店回复';
+                if (replyMenu) replyMenu.classList.add('active');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const view = params.get('view');
+            if (view === 'reply') {
+                switchNav('reply');
+            } else {
+                switchNav('alert');
+            }
+        });
+
+        // 预警配置：新建策略弹窗
+        function openCreateStrategyModal(isEdit, id) {
+            const titleEl = document.getElementById('strategy-modal-title');
+            if (isEdit) {
+                titleEl.innerText = '✏️ 编辑预警监控策略 (' + id + ')';
+            } else {
+                titleEl.innerText = '➕ 新建预警监控策略';
+            }
+            document.getElementById('modal-create-strategy').classList.add('active');
+        }
+
+        function closeCreateStrategyModal() {
+            document.getElementById('modal-create-strategy').classList.remove('active');
+        }
+
+        function saveStrategy() {
+            alert('预警监控策略已成功保存并立即生效！');
+            closeCreateStrategyModal();
+        }
+
+        // 预警配置：关键词录入与批量上传交互
+        let currentKwTab = 'single';
+
+        function openKwModal() {
+            document.getElementById('modal-add-kw').classList.add('active');
+            switchKwTab('single');
+        }
+
+        function closeKwModal() {
+            document.getElementById('modal-add-kw').classList.remove('active');
+        }
+
+        function switchKwTab(tab) {
+            currentKwTab = tab;
+            const singleBtn = document.getElementById('tab-btn-single');
+            const batchBtn = document.getElementById('tab-btn-batch');
+            const singleContent = document.getElementById('kw-tab-single-content');
+            const batchContent = document.getElementById('kw-tab-batch-content');
+            const submitBtn = document.getElementById('kw-modal-submit-btn');
+
+            if (tab === 'single') {
+                singleBtn.classList.add('active');
+                batchBtn.classList.remove('active');
+                singleContent.style.display = 'flex';
+                batchContent.style.display = 'none';
+                submitBtn.innerText = '确认录入 (16语种)';
+            } else {
+                singleBtn.classList.remove('active');
+                batchBtn.classList.add('active');
+                singleContent.style.display = 'none';
+                batchContent.style.display = 'flex';
+                submitBtn.innerText = '确认批量导入';
+            }
+        }
+
+        function downloadKwTemplate() {
+            alert('已成功生成【出海短剧_16语种风险监控关键词标准模板.xlsx】并触发下载！\n包含：P0-P3风险等级、中文主词及 EN/VI/KO/ES/PT/TH/ID/ZH-TW/JA/MS/AR/RU/DE/FR/TR/HI 16个标准表头列。');
+        }
+
+        let uploadedBatchFilename = '';
+
+        function simulateSelectFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx,.xls,.csv';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadedBatchFilename = file.name;
+                    const titleEl = document.getElementById('upload-box-title');
+                    const subEl = document.getElementById('upload-box-sub');
+                    if (titleEl) titleEl.innerHTML = `<span style="color:#15803d;">✅ 已选择文件：${file.name}</span>`;
+                    if (subEl) subEl.innerText = '格式解析正常，包含 16 种出海语种完整词条数据 (点击可更换文件)';
+                    alert(`文件【${file.name}】上传成功！已完成 16 语种字段校验。`);
+                }
+            };
+            input.click();
+        }
+
+        function handleKwSubmit() {
+            if (currentKwTab === 'single') {
+                const zh = document.getElementById('modal-zh-kw').value.trim() || '好评返金币';
+                const checkedRisk = document.querySelector('input[name="kw-risk-radio"]:checked')?.value || 'P0';
+                alert(`关键词【${zh}】已成功录入！\n已归类至【${checkedRisk}】等级，并同步关联保存了全部 16 种语言映射词条。`);
+                closeKwModal();
+            } else {
+                const filename = uploadedBatchFilename || '20260805_翻译团队_16国语言风险词库交付版.xlsx';
+                alert(`批量导入成功！\n已从文件【${filename}】中成功导入 24 条关键词策略，覆盖全部 16 种语言，已立即生效。`);
+                closeKwModal();
+            }
+        }
+
+        // 预警配置：风险等级录入弹窗
+        function openRiskLevelModal() {
+            document.getElementById('modal-risk-level').classList.add('active');
+        }
+
+        function closeRiskLevelModal() {
+            document.getElementById('modal-risk-level').classList.remove('active');
+        }
+
+        function confirmRiskLevelEntry() {
+            const name = document.getElementById('input-risk-level-name').value || 'P0 极高风险';
+            alert(`风险等级【${name}】已成功录入并生效！`);
+            closeRiskLevelModal();
+        }
+
+        // 预警策略列表筛选与重置
+        function filterAlertStrategyTable() {
+            const risk = document.getElementById('alert-search-risk').value;
+            const lang = document.getElementById('alert-search-lang').value;
+            const status = document.getElementById('alert-search-status').value;
+            const time = document.getElementById('alert-search-time').value.trim();
+            const creator = document.getElementById('alert-search-creator').value.trim();
+
+            const rows = document.querySelectorAll('#alert-strategy-table tbody tr');
+            rows.forEach(r => {
+                const text = r.innerText.toLowerCase();
+                let matchRisk = (risk === 'all') || (risk === 'p0' && text.includes('p0')) || (risk === 'p1' && text.includes('p1')) || (risk === 'p2' && text.includes('p2')) || (risk === 'p3' && text.includes('p3'));
+                let matchLang = (lang === 'all') || text.includes(lang) || text.includes('全部语言');
+                let matchTime = !time || text.includes(time);
+                let matchCreator = !creator || text.includes(creator);
+                
+                const checkbox = r.querySelector('.switch-toggle input');
+                let matchStatus = (status === 'all') || (status === 'active' && checkbox.checked) || (status === 'inactive' && !checkbox.checked);
+
+                if (matchRisk && matchLang && matchTime && matchCreator && matchStatus) {
+                    r.style.display = '';
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+        }
+
+        function resetAlertStrategyFilters() {
+            document.getElementById('alert-search-risk').value = 'all';
+            document.getElementById('alert-search-lang').value = 'all';
+            document.getElementById('alert-search-status').value = 'all';
+            document.getElementById('alert-search-time').value = '';
+            document.getElementById('alert-search-creator').value = '';
+            filterAlertStrategyTable();
+        }
+
+        function toggleStrategyStatus(elem) {
+            const statusText = elem.checked ? '启用' : '停用';
+            alert(`该策略已设置为【${statusText}】状态`);
+        }
+
+        function deleteStrategy(id) {
+            if (confirm(`确认删除预警策略 ${id} 吗？`)) {
+                alert(`策略 ${id} 已删除！`);
+            }
+        }
+
+        // 飞书预警弹窗
+        function showFeishuDemo() {
+            document.getElementById('modal-feishu').classList.add('active');
+        }
+
+        function closeFeishuDemo() {
+            document.getElementById('modal-feishu').classList.remove('active');
+        }
+
+        function goToHandleReview() {
+            closeFeishuDemo();
+            switchNav('reply');
+            document.getElementById('table-filter-risk').value = 'p0';
+            alert('已通过飞书 DeepLink 快捷跳转至后台【商店回复】并筛选出该条 P0 极高风险评论！');
+        }
+
+        // 商店回复页面筛选
+        function filterReplyTable() {
+            const risk = document.getElementById('table-filter-risk').value;
+            const kw = (document.getElementById('table-filter-kw')?.value || '').toLowerCase().trim();
+            const rows = document.querySelectorAll('#reply-table tbody tr');
+            rows.forEach(r => {
+                const text = r.innerText.toLowerCase();
+                let matchRisk = false;
+                if (risk === 'all') {
+                    matchRisk = true;
+                } else if (risk === 'p0' && text.includes('p0')) {
+                    matchRisk = true;
+                } else if (risk === 'p1' && text.includes('p1')) {
+                    matchRisk = true;
+                } else if (risk === 'p2' && text.includes('p2')) {
+                    matchRisk = true;
+                } else if (risk === 'p3' && text.includes('p3')) {
+                    matchRisk = true;
+                } else if (risk === 'none' && text.includes('无风险')) {
+                    matchRisk = true;
+                }
+
+                let matchKw = true;
+                if (kw) {
+                    matchKw = text.includes(kw);
+                }
+
+                if (matchRisk && matchKw) {
+                    r.style.display = '';
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+        }
+
+        function resetReplyFilters() {
+            document.getElementById('table-filter-risk').value = 'all';
+            const kwInput = document.getElementById('table-filter-kw');
+            if (kwInput) kwInput.value = '';
+            filterReplyTable();
+        }
+    </script>
+</body>
+</html>

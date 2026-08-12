@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>业务流程图 - 应用商店评论监控</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --primary: #2563eb;
+            --text-main: #0f172a;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-bar {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: #ffffff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #dbeafe;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* 流程图主卡片 */
+        .diagram-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mermaid {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <div class="header-left">
+            <a href="prototype_review_risk_alert.html" class="btn-back">← 返回原型系统</a>
+            <span class="page-title">极简业务逻辑流程图</span>
+        </div>
+        <div style="font-size: 13px; color: #64748b;">
+            一图看懂评论监控与预警闭环
+        </div>
+    </div>
+
+    <div class="diagram-card">
+        <div class="mermaid">
+            graph TD
+                %% 极简现代样式定义
+                classDef action fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1,font-weight:bold,rx:8px,ry:8px;
+                classDef decision fill:#FFF7ED,stroke:#EA580C,stroke-width:2px,color:#9A3412,font-weight:bold;
+                classDef endnode fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#14532D,font-weight:bold,rx:20px,ry:20px;
+
+                %% 核心流程节点
+                A0["1. 提前预设风险关键词，并定义对应的风险等级"]:::action
+                A["2. 运营配置预警推送策略 (如：群发频次)"]:::action
+                B["3. 系统定时从 App Store & Google Play 拉取全量评论"]:::action
+                C{"4. 评论内容是否命中预设风险词?"}:::decision
+                
+                A0 --> A
+                A --> B
+                B --> C
+                
+                %% 判定分支
+                D["常规评论：无需预警，流转入后台日常查询列表"]:::action
+                E["命中敏感词：系统自动匹配对应风险等级"]:::action
+                
+                C -->|未命中| D
+                C -->|已命中| E
+                
+                F["5. 预警定时推送：<br>根据预警策略配置的频次，汇总风险报表并通过飞书群发"]:::action
+                E --> F
+                
+                %% 客服处理闭环
+                I["6. 客服点击推送卡片链接，一键直达后台对应高危评论"]:::action
+                J["7. 客服选用官方标准公关话术，同步回复至应用商店"]:::action
+                K["✅ 8. 风险客诉处理闭环完成"]:::endnode
+                
+                F --> I
+                I --> J
+                J --> K
+        </div>
+    </div>
+
+</body>
+</html>
