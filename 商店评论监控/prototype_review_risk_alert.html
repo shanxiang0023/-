@@ -716,6 +716,9 @@
                 <span>🛡️ 预警配置</span>
                 <span class="badge-new">NEW</span>
             </div>
+            <div class="menu-item" id="menu-item-keyword" onclick="switchNav('keyword')">
+                <span>📝 预警词库</span>
+            </div>
             <div class="menu-item">
                 <span>📋 投诉/反馈</span>
             </div>
@@ -808,12 +811,7 @@
                         <button class="btn btn-primary" onclick="openCreateStrategyModal()" style="display: flex; align-items: center; gap: 6px; font-weight: 600;">
                             <span>➕</span> 新建
                         </button>
-                        <button class="btn btn-default" onclick="openKwModal()" style="display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #cbd5e1; font-weight: 600;">
-                            <span>📝</span> 关键词录入
-                        </button>
-                        <button class="btn btn-default" onclick="openRiskLevelModal()" style="display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #cbd5e1; font-weight: 600;">
-                            <span>🏷️</span> 风险等级录入
-                        </button>
+
                     </div>
                     <div style="font-size: 12px; color: #64748b;">
                         已配置监控策略：<strong style="color: #2563eb;" id="strategy-count">5</strong> 条 ｜ 监控服务：<span style="color: #10b981; font-weight: 600;">● 自动调度中</span>
@@ -961,6 +959,97 @@
                                         <div style="display: flex; gap: 8px;">
                                             <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openCreateStrategyModal(true, '0005')">编辑</a>
                                             <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteStrategy('0005')">删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 视图 3: 预警词库 (新增页面) -->
+            <div id="view-keyword-config" style="display: none; flex-direction: column; gap: 14px;">
+                <!-- 顶部搜索栏 -->
+                <div class="card" style="padding: 16px 20px; background: #fff;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                        <div class="filter-item">
+                            <span class="filter-label">关键词</span>
+                            <input type="text" class="input" id="kw-search-text" placeholder="输入中文主词..." style="width: 160px;">
+                        </div>
+                        <div class="filter-item">
+                            <span class="filter-label">风险等级</span>
+                            <select class="select" id="kw-search-risk" style="min-width: 130px;">
+                                <option value="all">全部等级</option>
+                                <option value="p0">🔴 P0 极高</option>
+                                <option value="p1">🟠 P1 高危</option>
+                                <option value="p2">🟡 P2 中危</option>
+                                <option value="p3">🟢 P3 低危</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-primary" onclick="filterKeywordTable()">🔍 搜索</button>
+                            <button class="btn btn-default" onclick="resetKeywordFilters()">🔄 重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 按钮栏 -->
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="openSingleKwModal()" style="display: flex; align-items: center; gap: 6px; font-weight: 600;">
+                            <span>➕</span> 单个新增
+                        </button>
+                        <button class="btn btn-default" onclick="openBatchKwModal()" style="display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #cbd5e1; font-weight: 600;">
+                            <span>📂</span> 批量导入
+                        </button>
+                    </div>
+                    <div style="font-size: 12px; color: #64748b;">
+                        当前词库包含 <strong style="color: #2563eb;">128</strong> 个主词
+                    </div>
+                </div>
+
+                <!-- 数据列表表格 -->
+                <div class="card" style="padding: 0; overflow: hidden; background: #fff;">
+                    <div class="table-responsive">
+                        <table id="keyword-table">
+                            <thead>
+                                <tr>
+                                    <th width="80">ID</th>
+                                    <th>中文主词</th>
+                                    <th width="120">风险等级</th>
+                                    <th width="150">映射外语</th>
+                                    <th width="120">录入人</th>
+                                    <th width="150">更新时间</th>
+                                    <th width="110">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span style="font-family: monospace; font-weight: 600; color: #475569;">KW-001</span></td>
+                                    <td><div style="font-weight: 600; color: #1e293b;">好评返金币 / 诱导好评</div></td>
+                                    <td><span class="risk-badge risk-p0">🔴 P0 极高</span></td>
+                                    <td><span style="color: #059669; font-weight: 600;">✅ 已配置 16 种</span></td>
+                                    <td>admin (张三)</td>
+                                    <td>2026-08-12 10:30</td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openSingleKwModal('好评返金币')">编辑</a>
+                                            <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteKeyword('KW-001')">删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span style="font-family: monospace; font-weight: 600; color: #475569;">KW-002</span></td>
+                                    <td><div style="font-weight: 600; color: #1e293b;">乱扣费 / 自动续费</div></td>
+                                    <td><span class="risk-badge risk-p1">🟠 P1 高危</span></td>
+                                    <td><span style="color: #059669; font-weight: 600;">✅ 已配置 16 种</span></td>
+                                    <td>李运营</td>
+                                    <td>2026-08-11 15:20</td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="javascript:void(0)" style="color: #2563eb; font-weight: 500; font-size: 12px;" onclick="openSingleKwModal('乱扣费')">编辑</a>
+                                            <a href="javascript:void(0)" style="color: #ef4444; font-weight: 500; font-size: 12px;" onclick="deleteKeyword('KW-002')">删除</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -1270,25 +1359,18 @@
         </div>
     </div>
 
-    <!-- 弹窗 2：【关键词录入与分级】弹窗 (支持单个录入与批量上传，覆盖16种语言) -->
-    <div class="modal-overlay" id="modal-add-kw">
+    <!-- 弹窗：新增/编辑单个关键词 -->
+    <div class="modal-overlay" id="modal-single-kw">
         <div class="modal" style="width: 720px;">
             <div class="modal-header">
-                <div class="modal-title">📝 关键词录入与分级</div>
-                <button class="modal-close" onclick="closeKwModal()">✕</button>
+                <div class="modal-title" id="single-kw-title">➕ 新增/编辑关键词 (16语种映射)</div>
+                <button class="modal-close" onclick="closeSingleKwModal()">✕</button>
             </div>
             <div class="modal-body" style="padding-bottom: 10px;">
-                <!-- Tab 页签切换 -->
-                <div class="kw-modal-tabs">
-                    <button class="kw-tab-btn active" id="tab-btn-single" onclick="switchKwTab('single')">单个录入 (16种语言)</button>
-                    <button class="kw-tab-btn" id="tab-btn-batch" onclick="switchKwTab('batch')">批量上传 (Excel / CSV 导入)</button>
-                </div>
-
-                <!-- 模式 A：单个录入 -->
-                <div id="kw-tab-single-content" style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; flex-direction: column; gap: 14px;">
                     <div>
                         <label style="font-weight: 600; display: block; margin-bottom: 4px;">输入关键词 (中文主词) <span style="color:red;">*</span></label>
-                        <input type="text" id="modal-zh-kw" class="input" value="好评返金币" placeholder="请输入中文主词，如：好评返金币 / 官方举报 / 乱扣费" style="width: 100%; height: 36px;">
+                        <input type="text" id="modal-zh-kw" class="input" placeholder="请输入中文主词，如：好评返金币 / 官方举报 / 乱扣费" style="width: 100%; height: 36px;">
                     </div>
 
                     <div>
@@ -1310,75 +1392,90 @@
                         <div class="trans-grid-16">
                             <div class="trans-item">
                                 <div class="trans-lang"><span>英语</span> <span class="trans-lang-code">EN</span></div>
-                                <input type="text" id="trans-en" class="input" value="coins for 5 stars, review reward, coins" placeholder="输入英语关键词...">
+                                <input type="text" id="trans-en" class="input" placeholder="输入英语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>越南语</span> <span class="trans-lang-code">VI</span></div>
-                                <input type="text" id="trans-vi" class="input" value="đánh giá 5 sao nhận xu, thưởng xu" placeholder="输入越南语关键词...">
+                                <input type="text" id="trans-vi" class="input" placeholder="输入越南语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>韩语</span> <span class="trans-lang-code">KO</span></div>
-                                <input type="text" id="trans-ko" class="input" value="5점 리뷰 코인 지급, 별점 보상" placeholder="输入韩语关键词...">
+                                <input type="text" id="trans-ko" class="input" placeholder="输入韩语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>西班牙语</span> <span class="trans-lang-code">ES</span></div>
-                                <input type="text" id="trans-es" class="input" value="monedas por 5 estrellas, recompensas" placeholder="输入西班牙语关键词...">
+                                <input type="text" id="trans-es" class="input" placeholder="输入西班牙语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>葡萄牙语</span> <span class="trans-lang-code">PT</span></div>
-                                <input type="text" id="trans-pt" class="input" value="moedas por 5 estrelas, recompensa de moedas" placeholder="输入葡萄牙语关键词...">
+                                <input type="text" id="trans-pt" class="input" placeholder="输入葡萄牙语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>泰语</span> <span class="trans-lang-code">TH</span></div>
-                                <input type="text" id="trans-th" class="input" value="เหรียญสำหรับ 5 ดาว, รางวัลรีวิว" placeholder="输入泰语关键词...">
+                                <input type="text" id="trans-th" class="input" placeholder="输入泰语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>印尼语</span> <span class="trans-lang-code">ID</span></div>
-                                <input type="text" id="trans-id" class="input" value="koin untuk ulasan bintang 5, hadiah koin" placeholder="输入印尼语关键词...">
+                                <input type="text" id="trans-id" class="input" placeholder="输入印尼语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>繁体中文</span> <span class="trans-lang-code">ZH-TW</span></div>
-                                <input type="text" id="trans-zhtw" class="input" value="好評返金幣, 五星好評領幣, 返利" placeholder="输入繁体中文关键词...">
+                                <input type="text" id="trans-zhtw" class="input" placeholder="输入繁体中文关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>日语</span> <span class="trans-lang-code">JA</span></div>
-                                <input type="text" id="trans-ja" class="input" value="星5レビューでコイン付与, コイン報酬" placeholder="输入日语关键词...">
+                                <input type="text" id="trans-ja" class="input" placeholder="输入日语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>马来语</span> <span class="trans-lang-code">MS</span></div>
-                                <input type="text" id="trans-ms" class="input" value="ganjaran syiling ulasan 5 bintang, syiling percuma" placeholder="输入马来语关键词...">
+                                <input type="text" id="trans-ms" class="input" placeholder="输入马来语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>阿拉伯语</span> <span class="trans-lang-code">AR</span></div>
-                                <input type="text" id="trans-ar" class="input" value="عملات مقابل تقييم 5 نجوم, مكافأة تقييم" placeholder="输入阿拉伯语关键词...">
+                                <input type="text" id="trans-ar" class="input" placeholder="输入阿拉伯语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>俄语</span> <span class="trans-lang-code">RU</span></div>
-                                <input type="text" id="trans-ru" class="input" value="монеты за 5 звезд, награда за отзыв" placeholder="输入俄语关键词...">
+                                <input type="text" id="trans-ru" class="input" placeholder="输入俄语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>德语</span> <span class="trans-lang-code">DE</span></div>
-                                <input type="text" id="trans-de" class="input" value="Münzen für 5-Sterne-Bewertung, Belohnung" placeholder="输入德语关键词...">
+                                <input type="text" id="trans-de" class="input" placeholder="输入德语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>法语</span> <span class="trans-lang-code">FR</span></div>
-                                <input type="text" id="trans-fr" class="input" value="pièces pour 5 étoiles, récompense avis" placeholder="输入法语关键词...">
+                                <input type="text" id="trans-fr" class="input" placeholder="输入法语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>土耳其语</span> <span class="trans-lang-code">TR</span></div>
-                                <input type="text" id="trans-tr" class="input" value="5 yıldız için jeton ödülü, puanlama ödülü" placeholder="输入土耳其语关键词...">
+                                <input type="text" id="trans-tr" class="input" placeholder="输入土耳其语关键词...">
                             </div>
                             <div class="trans-item">
                                 <div class="trans-lang"><span>印地语</span> <span class="trans-lang-code">HI</span></div>
-                                <input type="text" id="trans-hi" class="input" value="5 स्टार समीक्षा के लिए सिक्के, समीक्षा इनाम" placeholder="输入印地语关键词...">
+                                <input type="text" id="trans-hi" class="input" placeholder="输入印地语关键词...">
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- 模式 B：批量上传 (Excel / CSV) -->
-                <div id="kw-tab-batch-content" style="display: none; flex-direction: column; gap: 16px;">
-                    <!-- 步骤 1：下载模板 (已按批注删除副标题) -->
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeSingleKwModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitSingleKw()">确认保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：批量导入关键词 -->
+    <div class="modal-overlay" id="modal-batch-kw">
+        <div class="modal" style="width: 580px;">
+            <div class="modal-header">
+                <div class="modal-title">📂 批量导入关键词</div>
+                <button class="modal-close" onclick="closeBatchKwModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- 步骤 1：下载模板 -->
                     <div style="background: #f1f5f9; padding: 12px 16px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                         <div style="font-weight: 600; color: #1e293b; font-size: 13px;">第 1 步：获取翻译团队标准模版</div>
                         <button class="btn btn-default" style="background: #fff; border: 1px solid #cbd5e1; font-weight: 500;" onclick="downloadKwTemplate()">📥 下载 16 语种标准模板 (.xlsx)</button>
@@ -1395,30 +1492,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal-footer">
-                <button class="btn btn-default" onclick="closeKwModal()">取消</button>
-                <button class="btn btn-primary" id="kw-modal-submit-btn" onclick="handleKwSubmit()">确认录入</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 弹窗 3：【风险等级录入】弹窗 -->
-    <div class="modal-overlay" id="modal-risk-level">
-        <div class="modal" style="width: 480px;">
-            <div class="modal-header">
-                <div class="modal-title">🏷️ 风险等级录入</div>
-                <button class="modal-close" onclick="closeRiskLevelModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <label style="font-weight: 600; display: block; margin-bottom: 8px;">输入等级名称 <span style="color:red;">*</span></label>
-                    <input type="text" id="input-risk-level-name" class="input" placeholder="如：P0 极高风险 / P1 高危风险 / P4 特别关注" style="width: 100%; height: 38px;">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default" onclick="closeRiskLevelModal()">取消</button>
-                <button class="btn btn-primary" onclick="confirmRiskLevelEntry()">确认录入</button>
+                <button class="btn btn-default" onclick="closeBatchKwModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitBatchKw()">确认导入</button>
             </div>
         </div>
     </div>
@@ -1465,20 +1541,30 @@
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const alertMenu = document.getElementById('menu-item-alert');
             const replyMenu = document.getElementById('menu-item-reply');
+            const kwMenu = document.getElementById('menu-item-keyword');
             const alertView = document.getElementById('view-alert-config');
             const replyView = document.getElementById('view-reply-page');
+            const kwView = document.getElementById('view-keyword-config');
             const breadcrumb = document.getElementById('breadcrumb-title');
 
             if (type === 'alert') {
                 if (alertView) alertView.style.display = 'flex';
                 if (replyView) replyView.style.display = 'none';
+                if (kwView) kwView.style.display = 'none';
                 if (breadcrumb) breadcrumb.innerText = '预警配置';
                 if (alertMenu) alertMenu.classList.add('active');
             } else if (type === 'reply') {
                 if (alertView) alertView.style.display = 'none';
                 if (replyView) replyView.style.display = 'flex';
+                if (kwView) kwView.style.display = 'none';
                 if (breadcrumb) breadcrumb.innerText = '商店回复';
                 if (replyMenu) replyMenu.classList.add('active');
+            } else if (type === 'keyword') {
+                if (alertView) alertView.style.display = 'none';
+                if (replyView) replyView.style.display = 'none';
+                if (kwView) kwView.style.display = 'flex';
+                if (breadcrumb) breadcrumb.innerText = '预警词库';
+                if (kwMenu) kwMenu.classList.add('active');
             }
         }
 
@@ -1487,6 +1573,8 @@
             const view = params.get('view');
             if (view === 'reply') {
                 switchNav('reply');
+            } else if (view === 'keyword') {
+                switchNav('keyword');
             } else {
                 switchNav('alert');
             }
@@ -1520,47 +1608,46 @@
             }
         }
 
-        // 预警配置：关键词录入与批量上传交互
-        let currentKwTab = 'single';
-
-        function openKwModal() {
-            document.getElementById('modal-add-kw').classList.add('active');
-            switchKwTab('single');
-        }
-
-        function closeKwModal() {
-            document.getElementById('modal-add-kw').classList.remove('active');
-        }
-
-        function switchKwTab(tab) {
-            currentKwTab = tab;
-            const singleBtn = document.getElementById('tab-btn-single');
-            const batchBtn = document.getElementById('tab-btn-batch');
-            const singleContent = document.getElementById('kw-tab-single-content');
-            const batchContent = document.getElementById('kw-tab-batch-content');
-            const submitBtn = document.getElementById('kw-modal-submit-btn');
-
-            if (tab === 'single') {
-                singleBtn.classList.add('active');
-                batchBtn.classList.remove('active');
-                singleContent.style.display = 'flex';
-                batchContent.style.display = 'none';
-                submitBtn.innerText = '确认录入 (16语种)';
+        // 关键词库：单个新增与修改
+        function openSingleKwModal(kw) {
+            const title = document.getElementById('single-kw-title');
+            const input = document.getElementById('modal-zh-kw');
+            if (kw) {
+                title.innerText = '✏️ 编辑关键词 (' + kw + ')';
+                input.value = kw;
             } else {
-                singleBtn.classList.remove('active');
-                batchBtn.classList.add('active');
-                singleContent.style.display = 'none';
-                batchContent.style.display = 'flex';
-                submitBtn.innerText = '确认批量导入';
+                title.innerText = '➕ 新增关键词 (16语种映射)';
+                input.value = '';
             }
+            document.getElementById('modal-single-kw').classList.add('active');
+        }
+
+        function closeSingleKwModal() {
+            document.getElementById('modal-single-kw').classList.remove('active');
+        }
+
+        function submitSingleKw() {
+            const zh = document.getElementById('modal-zh-kw').value.trim() || '好评返金币';
+            const checkedRisk = document.querySelector('input[name="kw-risk-radio"]:checked')?.value || 'P0';
+            alert(`关键词【${zh}】已成功保存！
+已归类至【${checkedRisk}】等级，并关联保存了16种语言。`);
+            closeSingleKwModal();
+        }
+
+        // 关键词库：批量导入
+        function openBatchKwModal() {
+            document.getElementById('modal-batch-kw').classList.add('active');
+        }
+
+        function closeBatchKwModal() {
+            document.getElementById('modal-batch-kw').classList.remove('active');
         }
 
         function downloadKwTemplate() {
-            alert('已成功生成【出海短剧_16语种风险监控关键词标准模板.xlsx】并触发下载！\n包含：P0-P3风险等级、中文主词及 EN/VI/KO/ES/PT/TH/ID/ZH-TW/JA/MS/AR/RU/DE/FR/TR/HI 16个标准表头列。');
+            alert('已成功生成【出海短剧_16语种风险监控关键词标准模板.xlsx】并触发下载！');
         }
 
         let uploadedBatchFilename = '';
-
         function simulateSelectFile() {
             const input = document.createElement('input');
             input.type = 'file';
@@ -1572,39 +1659,35 @@
                     const titleEl = document.getElementById('upload-box-title');
                     const subEl = document.getElementById('upload-box-sub');
                     if (titleEl) titleEl.innerHTML = `<span style="color:#15803d;">✅ 已选择文件：${file.name}</span>`;
-                    if (subEl) subEl.innerText = '格式解析正常，包含 16 种出海语种完整词条数据 (点击可更换文件)';
-                    alert(`文件【${file.name}】上传成功！已完成 16 语种字段校验。`);
+                    if (subEl) subEl.innerText = '格式解析正常，包含 16 种出海语种完整词条数据';
+                    alert(`文件【${file.name}】上传成功！`);
                 }
             };
             input.click();
         }
 
-        function handleKwSubmit() {
-            if (currentKwTab === 'single') {
-                const zh = document.getElementById('modal-zh-kw').value.trim() || '好评返金币';
-                const checkedRisk = document.querySelector('input[name="kw-risk-radio"]:checked')?.value || 'P0';
-                alert(`关键词【${zh}】已成功录入！\n已归类至【${checkedRisk}】等级，并同步关联保存了全部 16 种语言映射词条。`);
-                closeKwModal();
-            } else {
-                const filename = uploadedBatchFilename || '20260805_翻译团队_16国语言风险词库交付版.xlsx';
-                alert(`批量导入成功！\n已从文件【${filename}】中成功导入 24 条关键词策略，覆盖全部 16 种语言，已立即生效。`);
-                closeKwModal();
+        function submitBatchKw() {
+            const filename = uploadedBatchFilename || '20260805_翻译团队_16国语言风险词库交付版.xlsx';
+            alert(`批量导入成功！
+已从文件【${filename}】中成功导入关键词策略。`);
+            closeBatchKwModal();
+        }
+
+        // 关键词库：列表操作
+        function filterKeywordTable() {
+            alert('执行关键词搜索过滤逻辑...');
+        }
+
+        function resetKeywordFilters() {
+            document.getElementById('kw-search-risk').value = 'all';
+            document.getElementById('kw-search-text').value = '';
+            alert('重置关键词搜索条件');
+        }
+
+        function deleteKeyword(id) {
+            if (confirm(`确认删除关键词 ${id} 吗？`)) {
+                alert(`关键词 ${id} 已删除！`);
             }
-        }
-
-        // 预警配置：风险等级录入弹窗
-        function openRiskLevelModal() {
-            document.getElementById('modal-risk-level').classList.add('active');
-        }
-
-        function closeRiskLevelModal() {
-            document.getElementById('modal-risk-level').classList.remove('active');
-        }
-
-        function confirmRiskLevelEntry() {
-            const name = document.getElementById('input-risk-level-name').value || 'P0 极高风险';
-            alert(`风险等级【${name}】已成功录入并生效！`);
-            closeRiskLevelModal();
         }
 
         // 预警策略列表筛选与重置
@@ -1656,10 +1739,6 @@
 
         // 飞书预警弹窗
         function showFeishuDemo() {
-            document.getElementById('modal-feishu').classList.add('active');
-        }
-
-        function closeFeishuDemo() {
             document.getElementById('modal-feishu').classList.remove('active');
         }
 
