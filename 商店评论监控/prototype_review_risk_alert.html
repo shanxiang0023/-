@@ -1200,7 +1200,16 @@
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px;">
                             <label style="font-weight: 600; display: block;">触发时间 (每天几点推送) <span style="color:red;">*</span></label>
-                            <span style="font-size: 12px; color: #2563eb; font-weight: 600;" id="strat-frequency-display">触发频次: 每天 1 次</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="font-size: 12px; font-weight: 600; color: #475569;">触发频次:</span>
+                                <select class="select" id="strat-frequency-select" style="height: 26px; padding: 0 8px; font-size: 12px; font-weight: 600; color: #2563eb; border-color: #bfdbfe; background: #eff6ff; outline: none; border-radius: 4px;">
+                                    <option value="24">每 24 小时</option>
+                                    <option value="8">每 8 小时</option>
+                                    <option value="5">每 5 小时</option>
+                                    <option value="3">每 3 小时</option>
+                                    <option value="1">每 1 小时</option>
+                                </select>
+                            </div>
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px 6px; background: #f8fafc; padding: 12px 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
                             <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 12px;"><input type="radio" name="strat-time" value="00:00" onchange="updateFrequency()"> 00:00</label>
@@ -1530,10 +1539,8 @@
         }
 
         function updateFrequency() {
-            const freqDisplay = document.getElementById('strat-frequency-display');
-            if (freqDisplay) {
-                freqDisplay.innerText = `触发频次: 每天 1 次`;
-            }
+            // Function logic removed since frequency is now a manual select dropdown
+        }
         }
 
         // 关键词库：单个新增与修改
